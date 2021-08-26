@@ -16,10 +16,12 @@ package com.google.devtools.build.lib.skyframe;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Interner;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.google.devtools.build.lib.cmdline.RepositoryName;
 import com.google.devtools.build.lib.concurrent.BlazeInterners;
 import com.google.devtools.build.lib.skyframe.serialization.autocodec.AutoCodec;
-import com.google.devtools.build.lib.vfs.PathFragment;
+import com.google.devtools.build.lib.vfs.IgnoredEntrySet;
 import com.google.devtools.build.skyframe.AbstractSkyKey;
 import com.google.devtools.build.skyframe.SkyFunctionName;
 import com.google.devtools.build.skyframe.SkyKey;
@@ -28,18 +30,18 @@ import com.google.devtools.build.skyframe.SkyValue;
 /** An immutable set of package name prefixes that should be ignored. */
 @AutoCodec
 public class IgnoredPackagePrefixesValue implements SkyValue {
-  private final ImmutableSet<PathFragment> patterns;
+  private final IgnoredEntrySet patterns;
 
   @AutoCodec @AutoCodec.VisibleForSerialization
   public static final IgnoredPackagePrefixesValue EMPTY_LIST =
-      new IgnoredPackagePrefixesValue(ImmutableSet.of());
+          new IgnoredPackagePrefixesValue(new IgnoredEntrySet(ImmutableSet.of()));
 
-  private IgnoredPackagePrefixesValue(ImmutableSet<PathFragment> patterns) {
+  private IgnoredPackagePrefixesValue(IgnoredEntrySet patterns) {
     this.patterns = Preconditions.checkNotNull(patterns);
   }
 
   @AutoCodec.Instantiator
-  public static IgnoredPackagePrefixesValue of(ImmutableSet<PathFragment> patterns) {
+  public static IgnoredPackagePrefixesValue of(IgnoredEntrySet patterns) {
     return patterns.isEmpty() ? EMPTY_LIST : new IgnoredPackagePrefixesValue(patterns);
   }
 
@@ -53,7 +55,7 @@ public class IgnoredPackagePrefixesValue implements SkyValue {
     return Key.create(repository);
   }
 
-  public ImmutableSet<PathFragment> getPatterns() {
+  public IgnoredEntrySet getPatterns() {
     return patterns;
   }
 
