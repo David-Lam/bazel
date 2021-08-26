@@ -19,10 +19,10 @@ public class IgnoredEntrySet {
         ImmutableSet.Builder<String> wildcardPatternsBuilder = ImmutableSet.builder();
 
         for (String pattern: patterns) {
-            if (UnixGlob.isWildcardFree(pattern))) {
+            if (UnixGlob.isWildcardFree(pattern)) {
                 ignoredPrefixesBuilder.add(PathFragment.create(pattern));
             } else {
-                wildcardPatternsBuilder.add(path);
+                wildcardPatternsBuilder.add(pattern);
             }
         }
 
@@ -47,42 +47,6 @@ public class IgnoredEntrySet {
 
     public boolean isEmpty() {
         return ignoredPrefixes.isEmpty() && wildcardPatterns.isEmpty();
-    }
-
-    public IgnoredEntrySet filterOnlySubdirectories(PathFragment root) {
-        ImmutableSet.Builder<PathFragment> filteredPathsBuilder = ImmutableSet.builder();
-        for (PathFragment prefix : ignoredPrefixes) {
-            if (!prefix.equals(root) && prefix.startsWith(root)) {
-                filteredPathsBuilder.add(prefix);
-            }
-        }
-        for (String pattern: wildcardPatterns) {
-            filteredPathsBuilder.add(PathFragment.create(pattern));
-        }
-        return new IgnoredEntrySet(filteredPathsBuilder.build());
-    }
-
-    public IgnoredEntrySet filterSubdirectories(PathFragment root) {
-        ImmutableSet.Builder<PathFragment> filteredPathsBuilder = ImmutableSet.builder();
-        for (PathFragment prefix : ignoredPrefixes) {
-            if (prefix.startsWith(root)) {
-                filteredPathsBuilder.add(prefix);
-            }
-        }
-        for (String pattern: wildcardPatterns) {
-            filteredPathsBuilder.add(PathFragment.create(pattern));
-        }
-        return new IgnoredEntrySet(filteredPathsBuilder.build());
-    }
-
-    public void checkAllPathsAreUnder(PathFragment root) {
-        for (PathFragment path : ignoredPrefixes) {
-            Preconditions.checkArgument(
-                    !path.equals(root) && path.startsWith(root),
-                    "%s is not beneath %s",
-                    path,
-                    root);
-        }
     }
 
     public int hashCode() {
