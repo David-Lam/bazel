@@ -37,6 +37,7 @@ import com.google.devtools.build.lib.pkgcache.FilteringPolicy;
 import com.google.devtools.build.lib.pkgcache.PathPackageLocator;
 import com.google.devtools.build.lib.pkgcache.TargetPatternResolverUtil;
 import com.google.devtools.build.lib.rules.repository.RepositoryDirectoryValue;
+import com.google.devtools.build.lib.vfs.IgnoredEntrySet;
 import com.google.devtools.build.lib.vfs.PathFragment;
 import com.google.devtools.build.lib.vfs.Root;
 import com.google.devtools.build.lib.vfs.RootedPath;
@@ -99,13 +100,8 @@ public class PrepareDepsOfPatternFunction implements SkyFunction {
     // since it has to iterate over those exclusions to see if they fully exclude the directory even
     // though TargetPatternKey guarantees that the exclusions will not fully exclude the directory.
     ImmutableSet<PathFragment> excludedPatterns = patternKey.getExcludedSubdirectories();
-    ImmutableSet<PathFragment> ignoredPatterns = repositoryIgnoredPrefixes.getPatterns();
-    ImmutableSet<PathFragment> repositoryIgnoredPatterns =
-        ImmutableSet.<PathFragment>builderWithExpectedSize(
-                excludedPatterns.size() + ignoredPatterns.size())
-            .addAll(excludedPatterns)
-            .addAll(ignoredPatterns)
-            .build();
+    IgnoredEntrySet ignoredPatterns = repositoryIgnoredPrefixes.getPatterns();
+    IgnoredEntrySet repositoryIgnoredPatterns = ignoredPatterns.combine(excludedPatterns);
 
     DepsOfPatternPreparer preparer =
         new DepsOfPatternPreparer(env, pkgPath.get(), traverseTestSuites);

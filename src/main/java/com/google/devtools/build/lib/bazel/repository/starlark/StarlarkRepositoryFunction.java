@@ -39,6 +39,7 @@ import com.google.devtools.build.lib.runtime.ProcessWrapper;
 import com.google.devtools.build.lib.runtime.RepositoryRemoteExecutor;
 import com.google.devtools.build.lib.skyframe.IgnoredPackagePrefixesValue;
 import com.google.devtools.build.lib.skyframe.PrecomputedValue;
+import com.google.devtools.build.lib.vfs.IgnoredEntrySet;
 import com.google.devtools.build.lib.vfs.Path;
 import com.google.devtools.build.lib.vfs.PathFragment;
 import com.google.devtools.build.skyframe.SkyFunction.Environment;
@@ -143,7 +144,7 @@ public class StarlarkRepositoryFunction extends RepositoryFunction {
     if (env.valuesMissing()) {
       return null;
     }
-    ImmutableSet<PathFragment> ignoredPatterns =
+    IgnoredEntrySet ignoredPatterns =
         Preconditions.checkNotNull(ignoredPackagesValue).getPatterns();
 
     try (Mutability mu = Mutability.create("Starlark repository")) {

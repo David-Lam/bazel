@@ -72,6 +72,7 @@ import com.google.devtools.build.lib.skyframe.SkyframeExecutor;
 import com.google.devtools.build.lib.skyframe.TargetPatternValue;
 import com.google.devtools.build.lib.skyframe.TargetPatternValue.TargetPatternKey;
 import com.google.devtools.build.lib.supplier.InterruptibleSupplier;
+import com.google.devtools.build.lib.vfs.IgnoredEntrySet;
 import com.google.devtools.build.lib.vfs.PathFragment;
 import com.google.devtools.build.skyframe.SkyKey;
 import com.google.devtools.build.skyframe.WalkableGraph;
@@ -233,14 +234,14 @@ public abstract class PostAnalysisQueryEnvironment<T> extends AbstractBlazeQuery
     return AliasProvider.isAlias(getConfiguredTargetValue(key).getConfiguredTarget());
   }
 
-  public InterruptibleSupplier<ImmutableSet<PathFragment>>
+  public InterruptibleSupplier<IgnoredEntrySet>
       getIgnoredPackagePrefixesPathFragments() {
     return () -> {
       IgnoredPackagePrefixesValue ignoredPackagePrefixesValue =
           (IgnoredPackagePrefixesValue)
               walkableGraphSupplier.get().getValue(IgnoredPackagePrefixesValue.key());
       return ignoredPackagePrefixesValue == null
-          ? ImmutableSet.of()
+          ? new IgnoredEntrySet(ImmutableSet.of())
           : ignoredPackagePrefixesValue.getPatterns();
     };
   }

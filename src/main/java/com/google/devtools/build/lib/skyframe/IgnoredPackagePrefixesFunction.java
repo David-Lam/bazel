@@ -17,10 +17,10 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.io.CharStreams;
 import com.google.common.io.LineProcessor;
 import com.google.devtools.build.lib.actions.FileValue;
-import com.google.devtools.build.lib.actions.InconsistentFilesystemException;
 import com.google.devtools.build.lib.cmdline.RepositoryName;
 import com.google.devtools.build.lib.events.Event;
 import com.google.devtools.build.lib.events.EventHandler;
+import com.google.devtools.build.lib.io.InconsistentFilesystemException;
 import com.google.devtools.build.lib.pkgcache.PathPackageLocator;
 import com.google.devtools.build.lib.rules.repository.RepositoryDirectoryValue;
 import com.google.devtools.build.lib.vfs.IgnoredEntrySet;
@@ -128,7 +128,7 @@ public class IgnoredPackagePrefixesFunction implements SkyFunction {
 
   private static final class PathFragmentLineProcessor
           implements LineProcessor<ImmutableSet<String>> {
-    private final ImmutableSet.Builder<PathFragment> patterns = ImmutableSet.builder();
+    private final ImmutableSet.Builder<String> patterns = ImmutableSet.builder();
     private final EventHandler eventHandler;
 
     public PathFragmentLineProcessor(EventHandler eventHandler) {
@@ -151,7 +151,7 @@ public class IgnoredPackagePrefixesFunction implements SkyFunction {
     }
 
     @Override
-    public ImmutableSet<PathFragment> getResult() {
+    public ImmutableSet<String> getResult() {
       return patterns.build();
     }
   }

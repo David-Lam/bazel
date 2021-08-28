@@ -105,6 +105,7 @@ import com.google.devtools.build.lib.skyframe.TraversalInfoRootPackageExtractor;
 import com.google.devtools.build.lib.supplier.InterruptibleSupplier;
 import com.google.devtools.build.lib.supplier.MemoizingInterruptibleSupplier;
 import com.google.devtools.build.lib.util.DetailedExitCode;
+import com.google.devtools.build.lib.vfs.IgnoredEntrySet;
 import com.google.devtools.build.lib.vfs.Path;
 import com.google.devtools.build.lib.vfs.PathFragment;
 import com.google.devtools.build.skyframe.EvaluationContext;
@@ -163,7 +164,7 @@ public class SkyQueryEnvironment extends AbstractBlazeQueryEnvironment<Target>
   // The following fields are set in the #beforeEvaluateQuery method.
   protected MultisetSemaphore<PackageIdentifier> packageSemaphore;
   protected WalkableGraph graph;
-  protected InterruptibleSupplier<ImmutableSet<PathFragment>> ignoredPatternsSupplier;
+  protected InterruptibleSupplier<IgnoredEntrySet> ignoredPatternsSupplier;
   protected GraphBackedRecursivePackageProvider graphBackedRecursivePackageProvider;
   protected ListeningExecutorService executor;
   private TargetPatternResolver<Target> resolver;
@@ -1288,7 +1289,7 @@ public class SkyQueryEnvironment extends AbstractBlazeQueryEnvironment<Target>
   }
 
   private static class IgnoredPatternSupplier
-      implements InterruptibleSupplier<ImmutableSet<PathFragment>> {
+      implements InterruptibleSupplier<IgnoredEntrySet> {
     private final WalkableGraph graph;
 
     private IgnoredPatternSupplier(WalkableGraph graph) {
@@ -1296,7 +1297,7 @@ public class SkyQueryEnvironment extends AbstractBlazeQueryEnvironment<Target>
     }
 
     @Override
-    public ImmutableSet<PathFragment> get() throws InterruptedException {
+    public IgnoredEntrySet get() throws InterruptedException {
       return ((IgnoredPackagePrefixesValue) graph.getValue(IgnoredPackagePrefixesValue.key()))
           .getPatterns();
     }

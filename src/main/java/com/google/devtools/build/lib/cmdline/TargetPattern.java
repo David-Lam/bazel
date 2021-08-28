@@ -33,6 +33,7 @@ import com.google.devtools.build.lib.concurrent.BatchCallback;
 import com.google.devtools.build.lib.server.FailureDetails.TargetPatterns;
 import com.google.devtools.build.lib.supplier.InterruptibleSupplier;
 import com.google.devtools.build.lib.util.StringUtilities;
+import com.google.devtools.build.lib.vfs.IgnoredEntrySet;
 import com.google.devtools.build.lib.vfs.PathFragment;
 import com.google.errorprone.annotations.CheckReturnValue;
 import com.google.errorprone.annotations.CompileTimeConstant;
@@ -154,7 +155,7 @@ public abstract class TargetPattern implements Serializable {
    */
   public abstract <T, E extends Exception> void eval(
       TargetPatternResolver<T> resolver,
-      InterruptibleSupplier<ImmutableSet<PathFragment>> ignoredSubdirectories,
+      InterruptibleSupplier<IgnoredEntrySet> ignoredSubdirectories,
       ImmutableSet<PathFragment> excludedSubdirectories,
       BatchCallback<T, E> callback,
       Class<E> exceptionClass)
@@ -170,7 +171,7 @@ public abstract class TargetPattern implements Serializable {
    */
   public final <T, E extends Exception> ListenableFuture<Void> evalAdaptedForAsync(
       TargetPatternResolver<T> resolver,
-      InterruptibleSupplier<ImmutableSet<PathFragment>> ignoredSubdirectories,
+      InterruptibleSupplier<IgnoredEntrySet> ignoredSubdirectories,
       ImmutableSet<PathFragment> excludedSubdirectories,
       BatchCallback<T, E> callback,
       Class<E> exceptionClass) {
@@ -199,7 +200,7 @@ public abstract class TargetPattern implements Serializable {
    */
   public <T, E extends Exception> ListenableFuture<Void> evalAsync(
       TargetPatternResolver<T> resolver,
-      InterruptibleSupplier<ImmutableSet<PathFragment>> ignoredSubdirectories,
+      InterruptibleSupplier<IgnoredEntrySet> ignoredSubdirectories,
       ImmutableSet<PathFragment> excludedSubdirectories,
       BatchCallback<T, E> callback,
       Class<E> exceptionClass,
@@ -270,7 +271,7 @@ public abstract class TargetPattern implements Serializable {
     @Override
     public <T, E extends Exception> void eval(
         TargetPatternResolver<T> resolver,
-        InterruptibleSupplier<ImmutableSet<PathFragment>> ignoredSubdirectories,
+        InterruptibleSupplier<IgnoredEntrySet> ignoredSubdirectories,
         ImmutableSet<PathFragment> excludedSubdirectories,
         BatchCallback<T, E> callback,
         Class<E> exceptionClass)
@@ -332,7 +333,7 @@ public abstract class TargetPattern implements Serializable {
     @Override
     public <T, E extends Exception> void eval(
         TargetPatternResolver<T> resolver,
-        InterruptibleSupplier<ImmutableSet<PathFragment>> ignoredSubdirectories,
+        InterruptibleSupplier<IgnoredEntrySet> ignoredSubdirectories,
         ImmutableSet<PathFragment> excludedSubdirectories,
         BatchCallback<T, E> callback,
         Class<E> exceptionClass)
@@ -431,7 +432,7 @@ public abstract class TargetPattern implements Serializable {
     @Override
     public <T, E extends Exception> void eval(
         TargetPatternResolver<T> resolver,
-        InterruptibleSupplier<ImmutableSet<PathFragment>> ignoredSubdirectories,
+        InterruptibleSupplier<IgnoredEntrySet> ignoredSubdirectories,
         ImmutableSet<PathFragment> excludedSubdirectories,
         BatchCallback<T, E> callback,
         Class<E> exceptionClass)
@@ -552,7 +553,7 @@ public abstract class TargetPattern implements Serializable {
     @Override
     public <T, E extends Exception> void eval(
         TargetPatternResolver<T> resolver,
-        InterruptibleSupplier<ImmutableSet<PathFragment>> ignoredSubdirectories,
+        InterruptibleSupplier<IgnoredEntrySet> ignoredSubdirectories,
         ImmutableSet<PathFragment> excludedSubdirectories,
         BatchCallback<T, E> callback,
         Class<E> exceptionClass)
@@ -581,7 +582,7 @@ public abstract class TargetPattern implements Serializable {
     @Override
     public <T, E extends Exception> ListenableFuture<Void> evalAsync(
         TargetPatternResolver<T> resolver,
-        InterruptibleSupplier<ImmutableSet<PathFragment>> ignoredSubdirectories,
+        InterruptibleSupplier<IgnoredEntrySet> ignoredSubdirectories,
         ImmutableSet<PathFragment> excludedSubdirectories,
         BatchCallback<T, E> callback,
         Class<E> exceptionClass,
@@ -628,7 +629,7 @@ public abstract class TargetPattern implements Serializable {
     }
 
     public IgnoredPathFragmentsInScopeOrFilteringIgnorer getAllIgnoredSubdirectoriesToExclude(
-        InterruptibleSupplier<ImmutableSet<PathFragment>> ignoredPackagePrefixes)
+        InterruptibleSupplier<IgnoredEntrySet> ignoredPackagePrefixes)
         throws InterruptedException {
       ImmutableSet.Builder<PathFragment> ignoredPathsBuilder =
           ImmutableSet.builderWithExpectedSize(0);

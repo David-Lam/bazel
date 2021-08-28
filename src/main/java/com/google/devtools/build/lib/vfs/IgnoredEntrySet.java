@@ -12,6 +12,10 @@ public class IgnoredEntrySet {
     private final ImmutableSet<String> wildcardPatterns;
     private final Map<String, Pattern> patternCache;
 
+    public static IgnoredEntrySet empty() {
+        return new IgnoredEntrySet(ImmutableSet.of());
+    }
+
     public IgnoredEntrySet(ImmutableSet<String> patterns) {
         Preconditions.checkNotNull(patterns);
 
@@ -45,6 +49,22 @@ public class IgnoredEntrySet {
         return false;
     }
 
+    public IgnoredEntrySet combine(ImmutableSet<PathFragment> set) {
+        ImmutableSet.Builder<String> allEntriesBuilder = ImmutableSet.builder();
+        allEntriesBuilder.addAll(wildcardPatterns);
+        addAllPathFragment(allEntriesBuilder, ignoredPrefixes);
+        addAllPathFragment(allEntriesBuilder, set);
+        return new IgnoredEntrySet(allEntriesBuilder.build());
+    }
+
+    private static void addAllPathFragment(
+            ImmutableSet.Builder<String> builder,
+            ImmutableSet<PathFragment> pathFragmentSet) {
+        for (PathFragment pathFragment : pathFragmentSet) {
+            builder.add(pathFragment.getPathString());
+        }
+    }
+
     public boolean isEmpty() {
         return ignoredPrefixes.isEmpty() && wildcardPatterns.isEmpty();
     }
@@ -52,9 +72,7 @@ public class IgnoredEntrySet {
     public int hashCode() {
         ImmutableSet.Builder<String> allEntriesBuilder = ImmutableSet.builder();
         allEntriesBuilder.addAll(wildcardPatterns);
-        for (PathFragment prefix : ignoredPrefixes) {
-            allEntriesBuilder.add(prefix.getPathString());
-        }
+        addAllPathFragment(allEntriesBuilder, ignoredPrefixes);
         return allEntriesBuilder.build().hashCode();
     }
 

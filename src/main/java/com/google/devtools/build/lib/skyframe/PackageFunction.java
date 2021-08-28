@@ -65,6 +65,7 @@ import com.google.devtools.build.lib.skyframe.StarlarkBuiltinsFunction.BuiltinsF
 import com.google.devtools.build.lib.util.DetailedExitCode;
 import com.google.devtools.build.lib.util.Pair;
 import com.google.devtools.build.lib.vfs.FileSystemUtils;
+import com.google.devtools.build.lib.vfs.IgnoredEntrySet;
 import com.google.devtools.build.lib.vfs.Path;
 import com.google.devtools.build.lib.vfs.PathFragment;
 import com.google.devtools.build.lib.vfs.Root;
@@ -1206,7 +1207,7 @@ public class PackageFunction implements SkyFunction {
   private GlobberWithSkyframeGlobDeps makeGlobber(
       Path buildFilePath,
       PackageIdentifier packageId,
-      ImmutableSet<PathFragment> repositoryIgnoredPatterns,
+      IgnoredEntrySet repositoryIgnoredPatterns,
       Root packageRoot,
       Environment env,
       SkyKey keyForMetrics) {
@@ -1240,7 +1241,7 @@ public class PackageFunction implements SkyFunction {
   private LoadedPackageCacheEntry loadPackage(
       String workspaceName,
       ImmutableMap<RepositoryName, RepositoryName> repositoryMapping,
-      ImmutableSet<PathFragment> repositoryIgnoredPatterns,
+      IgnoredEntrySet repositoryIgnoredPatterns,
       PackageIdentifier packageId,
       RootedPath buildFilePath,
       FileValue buildFileValue,

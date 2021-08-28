@@ -31,6 +31,7 @@ import com.google.devtools.build.lib.pkgcache.TargetPatternPreloader;
 import com.google.devtools.build.lib.server.FailureDetails.TargetPatterns;
 import com.google.devtools.build.lib.skyframe.TargetPatternValue.TargetPatternKey;
 import com.google.devtools.build.lib.util.DetailedExitCode;
+import com.google.devtools.build.lib.vfs.IgnoredEntrySet;
 import com.google.devtools.build.lib.vfs.PathFragment;
 import com.google.devtools.build.skyframe.ErrorInfo;
 import com.google.devtools.build.skyframe.EvaluationResult;
@@ -255,7 +256,7 @@ public final class SkyframeTargetPatternEvaluator implements TargetPatternPreloa
       AtomicReference<Collection<Target>> result = new AtomicReference<>();
       targetPattern.eval(
           resolver,
-          /*ignoredSubdirectories=*/ ImmutableSet::of,
+          /*ignoredSubdirectories=*/ IgnoredEntrySet::empty,
           /*excludedSubdirectories=*/ ImmutableSet.of(),
           partialResult ->
               result.set(

@@ -42,6 +42,7 @@ import com.google.devtools.build.lib.server.FailureDetails.FailureDetail;
 import com.google.devtools.build.lib.server.FailureDetails.PackageLoading;
 import com.google.devtools.build.lib.server.FailureDetails.PackageLoading.Code;
 import com.google.devtools.build.lib.util.DetailedExitCode;
+import com.google.devtools.build.lib.vfs.IgnoredEntrySet;
 import com.google.devtools.build.lib.vfs.FileSystem;
 import com.google.devtools.build.lib.vfs.Path;
 import com.google.devtools.build.lib.vfs.PathFragment;
@@ -472,7 +473,7 @@ public final class PackageFactory {
   public NonSkyframeGlobber createNonSkyframeGlobber(
       Path packageDirectory,
       PackageIdentifier packageId,
-      ImmutableSet<PathFragment> ignoredGlobPrefixes,
+      IgnoredEntrySet ignoredGlobPrefixes,
       CachingPackageLocator locator,
       ThreadStateReceiver threadStateReceiverForMetrics) {
     return new NonSkyframeGlobber(

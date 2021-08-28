@@ -59,6 +59,7 @@ import com.google.devtools.build.lib.util.OsUtils;
 import com.google.devtools.build.lib.util.StringUtilities;
 import com.google.devtools.build.lib.util.io.OutErr;
 import com.google.devtools.build.lib.vfs.FileSystemUtils;
+import com.google.devtools.build.lib.vfs.IgnoredEntrySet;
 import com.google.devtools.build.lib.vfs.Path;
 import com.google.devtools.build.lib.vfs.PathFragment;
 import com.google.devtools.build.lib.vfs.RootedPath;
@@ -111,7 +112,7 @@ public class StarlarkRepositoryContext
   private final Path outputDirectory;
   private final StructImpl attrObject;
   private final StarlarkOS osObject;
-  private final ImmutableSet<PathFragment> ignoredPatterns;
+  private final IgnoredEntrySet ignoredPatterns;
   private final Environment env;
   private final DownloadManager downloadManager;
   private final double timeoutScaling;
@@ -128,7 +129,7 @@ public class StarlarkRepositoryContext
       Rule rule,
       PathPackageLocator packageLocator,
       Path outputDirectory,
-      ImmutableSet<PathFragment> ignoredPatterns,
+      IgnoredEntrySet ignoredPatterns,
       Environment environment,
       Map<String, String> env,
       DownloadManager downloadManager,
@@ -182,10 +183,8 @@ public class StarlarkRepositoryContext
     }
     Path workspaceRoot = packageLocator.getWorkspaceFile().getParentDirectory();
     PathFragment relativePath = path.relativeTo(workspaceRoot);
-    for (PathFragment ignoredPattern : ignoredPatterns) {
-      if (relativePath.startsWith(ignoredPattern)) {
-        return starlarkPath;
-      }
+    if (ignoredPatterns.isPathFragmentIgnored(relativePath)) {
+      return starlarkPath;
     }
     throw Starlark.errorf(
         "%s can only be applied to external paths (that is, outside the workspace or ignored in"

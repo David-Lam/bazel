@@ -26,6 +26,7 @@ import com.google.devtools.build.lib.packages.OutputFile;
 import com.google.devtools.build.lib.packages.Target;
 import com.google.devtools.build.lib.pkgcache.AbstractRecursivePackageProvider.MissingDepException;
 import com.google.devtools.build.lib.pkgcache.ParsingFailedEvent;
+import com.google.devtools.build.lib.vfs.IgnoredEntrySet;
 import com.google.devtools.build.lib.vfs.PathFragment;
 import com.google.devtools.build.skyframe.SkyFunction;
 import com.google.devtools.build.skyframe.SkyFunctionException;
@@ -55,7 +56,7 @@ public class TargetPatternFunction implements SkyFunction {
     if (ignoredPackagePrefixes == null) {
       return null;
     }
-    ImmutableSet<PathFragment> ignoredPatterns = ignoredPackagePrefixes.getPatterns();
+    IgnoredEntrySet ignoredPatterns = ignoredPackagePrefixes.getPatterns();
 
     ResolvedTargets<Target> resolvedTargets;
     try {

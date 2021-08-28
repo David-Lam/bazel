@@ -69,10 +69,8 @@ public final class GlobFunction implements SkyFunction {
     PathFragment globSubdir = glob.getSubdir();
     PathFragment dirPathFragment = glob.getPackageId().getPackageFragment().getRelative(globSubdir);
 
-    for (PathFragment ignoredPrefix : ignoredPackagePrefixes.getPatterns()) {
-      if (dirPathFragment.startsWith(ignoredPrefix)) {
-        return GlobValue.EMPTY;
-      }
+    if (ignoredPackagePrefixes.getPatterns().isPathFragmentIgnored(dirPathFragment)) {
+      return GlobValue.EMPTY;
     }
 
     // Note that the glob's package is assumed to exist which implies that the package's BUILD file

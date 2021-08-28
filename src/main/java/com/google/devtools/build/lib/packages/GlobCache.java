@@ -26,6 +26,7 @@ import com.google.devtools.build.lib.concurrent.ThreadSafety;
 import com.google.devtools.build.lib.packages.Globber.BadGlobException;
 import com.google.devtools.build.lib.profiler.SilentCloseable;
 import com.google.devtools.build.lib.util.Pair;
+import com.google.devtools.build.lib.vfs.IgnoredEntrySet;
 import com.google.devtools.build.lib.vfs.Path;
 import com.google.devtools.build.lib.vfs.PathFragment;
 import com.google.devtools.build.lib.vfs.UnixGlob;
@@ -99,7 +100,7 @@ public class GlobCache {
   public GlobCache(
       final Path packageDirectory,
       final PackageIdentifier packageId,
-      final ImmutableSet<PathFragment> ignoredGlobPrefixes,
+      final IgnoredEntrySet ignoredGlobPrefixes,
       final CachingPackageLocator locator,
       AtomicReference<? extends UnixGlob.FilesystemCalls> syscalls,
       Executor globExecutor,
@@ -129,10 +130,8 @@ public class GlobCache {
           PathFragment subPackagePath =
               packageId.getPackageFragment().getRelative(directory.relativeTo(packageDirectory));
 
-          for (PathFragment ignoredPrefix : ignoredGlobPrefixes) {
-            if (subPackagePath.startsWith(ignoredPrefix)) {
-              return false;
-            }
+          if (ignoredGlobPrefixes.isPathFragmentIgnored(subPackagePath)) {
+            return false;
           }
 
           PackageIdentifier subPackageId =
